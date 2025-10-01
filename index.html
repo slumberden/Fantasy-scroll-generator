@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Character Generator Scroll</title>
+  <style>
+    body {
+      font-family: 'Garamond', serif;
+      background: #1b1a17;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .scroll {
+      width: 600px;
+      padding: 40px;
+      border: 12px solid #d2b48c;
+      border-image: url('https://i.imgur.com/L5X1k3E.png') 30 round;
+      background: #fdf6e3;
+      background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
+      background-blend-mode: multiply;
+      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+      color: #2b2a27;
+      overflow-y: auto;
+      max-height: 85vh;
+      position: relative;
+    }
+
+    /* Randomized parchment wear states */
+    .wear-1 { filter: brightness(1) contrast(1); }
+    .wear-2 { filter: sepia(0.2) brightness(0.95); }
+    .wear-3 { filter: sepia(0.4) brightness(0.9) contrast(1.1); }
+    .wear-4 { filter: grayscale(0.1) sepia(0.5) brightness(0.85); }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    .codex {
+      display: inline-block;
+      margin-left: 6px;
+      cursor: help;
+      font-size: 18px;
+    }
+
+    .codex::after {
+      content: "📜";
+    }
+
+    .tooltip {
+      visibility: hidden;
+      background: rgba(20, 20, 20, 0.9);
+      color: #f0e6d2;
+      text-align: left;
+      border-radius: 5px;
+      padding: 6px;
+      position: absolute;
+      z-index: 10;
+      max-width: 250px;
+      font-size: 14px;
+    }
+
+    .codex:hover .tooltip {
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div id="scroll" class="scroll">
+    <h1>🪄 Fantasy Character Generator</h1>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    const wearClasses = ["wear-1", "wear-2", "wear-3", "wear-4"];
+
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generateCharacter() {
+      const species = ["Human", "Elf", "Dwarf", "Orc", "Halfling", "Shapeshifter", "Selkie"];
+      const regions = ["Northern Kingdoms", "Eastern Sands", "Southern Isles", "Western Wilds", "Deep Waters"];
+      const wealth = ["Poor", "Modest", "Comfortable", "Wealthy", "Noble"];
+      const stats = [15, 14, 13, 12, 10, 8];
+
+      const chosenSpecies = randomItem(species);
+      const chosenRegion = randomItem(regions);
+      const chosenWealth = randomItem(wealth);
+
+      let codexFragment = "";
+      if (Math.random() < 0.05) { // 5% chance conflict -> Codex appears
+        const fragments = [
+          "The shadow remembers…",
+          "Truth lies fractured…",
+          "A pact written, a name forgotten…",
+          "Does memory deceive?",
+          "The blood knows more than the tongue…"
+        ];
+
+        if (Math.random() < 0.005) {
+          // Ultra rare too broken (no tooltip at all)
+          codexFragment = `<span class="codex"></span>`;
+        } else {
+          codexFragment = `<span class="codex"><span class="tooltip">${randomItem(fragments)}</span></span>`;
+        }
+      }
+
+      const scroll = document.getElementById("scroll");
+      scroll.className = `scroll ${randomItem(wearClasses)}`;
+
+      document.getElementById("content").innerHTML = `
+        <h2>${chosenSpecies} of the ${chosenRegion}</h2>
+        <p><b>Wealth Status:</b> ${chosenWealth}</p>
+        <p><b>Stats:</b> ${stats.join(", ")}</p>
+        ${codexFragment}
+      `;
+    }
+
+    generateCharacter();
+  </script>
+</body>
+</html>
